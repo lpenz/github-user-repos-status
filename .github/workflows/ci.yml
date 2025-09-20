@@ -1,0 +1,10 @@
+---
+name: CI
+on: [workflow_dispatch, push, pull_request]  # yamllint disable-line rule:truthy
+jobs:
+  omnilint:
+    uses: lpenz/omnilint/.github/workflows/omnilint.yml@v0.5.2
+  rust:
+    uses: lpenz/ghworkflow-rust/.github/workflows/rust.yml@v0.26.4
+    with:
+      coveralls: true
