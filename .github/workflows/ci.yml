@@ -10,7 +10,6 @@ jobs:
       coveralls: true
   build-page:
     runs-on: ubuntu-latest
-    needs: [omnilint, rust]
     steps:
       - uses: actions/checkout@v5.0.0
       - uses: dtolnay/rust-toolchain@stable
@@ -18,6 +17,20 @@ jobs:
       - run: cargo run -- -o index.md
         env:
           GITHUB_USER_REPOS_STATUS: ${{ secrets.USER_REPOS_STATUS }}
+      - run: cat index.md
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: page
+          if-no-files-found: error
+          path: index.md
+  deploy-page:
+    runs-on: ubuntu-latest
+    needs: [omnilint, rust, build-page]
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: page
       - run: cat index.md
       - run: rm -f .gitignore
       - name: deploy
