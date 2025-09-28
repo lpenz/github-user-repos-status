@@ -14,7 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo run > index.md
+      - run: cargo build
+      - run: cargo run | tee index.md
         env:
           GITHUB_USER_REPOS_STATUS: ${{ secrets.USER_REPOS_STATUS }}
       - run: rm -f .gitignore
