@@ -6,4 +6,8 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
-pub struct Cli {}
+pub struct Cli {
+    /// Write the output to the provided file.
+    #[clap(short = 'o', long)]
+    pub output: Option<String>,
+}
