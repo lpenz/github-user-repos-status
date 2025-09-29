@@ -25,7 +25,7 @@ pub fn markdown_write<W: std::io::Write>(
         if let Some(readme) = &repo.readme {
             let shields = shields_get(readme).unwrap();
             for shield in shields {
-                write!(o, " ![]({})", shield)?;
+                write!(o, " {}", shield)?;
             }
         }
         writeln!(o, " |")?;
