@@ -18,7 +18,7 @@ pub fn md_write_repo<W: std::io::Write>(
 ) -> Result<()> {
     write!(
         o,
-        "| [{}]({})  | {}  |",
+        "| [{}]({}) | {} |",
         repo.name, repo.html_url, repo.stargazers_count
     )?;
     if let Some(readme) = &repo.readme {
@@ -35,8 +35,8 @@ pub fn md_write_repos<'a, W: std::io::Write>(
     o: &mut std::io::BufWriter<W>,
     repos: impl Iterator<Item = &'a repo::Repo>,
 ) -> Result<()> {
-    writeln!(o, "| Repository  | Stars  | Shields  |")?;
-    writeln!(o, "| -- | -- | -- |")?;
+    writeln!(o, "| Repository | Stars | Shields |")?;
+    writeln!(o, "| -- | --: | -- |")?;
     for repo in repos {
         md_write_repo(o, repo)?;
     }
