@@ -12,24 +12,44 @@ mod cli;
 mod readme;
 mod repo;
 
+pub fn md_write_repo<W: std::io::Write>(
+    o: &mut std::io::BufWriter<W>,
+    repo: &repo::Repo,
+) -> Result<()> {
+    write!(o, "| [{}]({})  |", repo.name, repo.html_url)?;
+    if let Some(readme) = &repo.readme {
+        let shields = shields_get(readme).unwrap();
+        for shield in shields {
+            write!(o, " {}", shield)?;
+        }
+    }
+    writeln!(o, " |")?;
+    Ok(())
+}
+
+pub fn md_write_repos<'a, W: std::io::Write>(
+    o: &mut std::io::BufWriter<W>,
+    repos: impl Iterator<Item = &'a repo::Repo>,
+) -> Result<()> {
+    writeln!(o, "| Repository  | Shields  |")?;
+    writeln!(o, "| -- | -- |")?;
+    for repo in repos {
+        md_write_repo(o, repo)?;
+    }
+    writeln!(o)?;
+    Ok(())
+}
+
 pub fn markdown_write<W: std::io::Write>(
     repos: &[repo::Repo],
     mut o: std::io::BufWriter<W>,
 ) -> Result<()> {
-    writeln!(o, "# Repositories")?;
+    writeln!(o, "# Active Repositories")?;
     writeln!(o)?;
-    writeln!(o, "| Repository  | Shields  |")?;
-    writeln!(o, "| -- | -- |")?;
-    for repo in repos {
-        write!(o, "| [{}]({})  |", repo.name, repo.html_url)?;
-        if let Some(readme) = &repo.readme {
-            let shields = shields_get(readme).unwrap();
-            for shield in shields {
-                write!(o, " {}", shield)?;
-            }
-        }
-        writeln!(o, " |")?;
-    }
+    md_write_repos(&mut o, repos.iter().filter(|r| !r.archived))?;
+    writeln!(o, "# Archived Repositories")?;
+    writeln!(o)?;
+    md_write_repos(&mut o, repos.iter().filter(|r| r.archived))?;
     Ok(())
 }
 
