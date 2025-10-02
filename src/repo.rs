@@ -23,6 +23,7 @@ pub struct Repo {
     pub archived: bool,
     pub owner: Owner,
     pub readme: Option<String>,
+    pub stargazers_count: u32,
 }
 
 #[derive(Debug, Deserialize)]
