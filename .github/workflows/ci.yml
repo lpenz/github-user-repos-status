@@ -1,0 +1,28 @@
+---
+name: CI
+on: [workflow_dispatch, push, pull_request]  # yamllint disable-line rule:truthy
+jobs:
+  omnilint:
+    uses: lpenz/omnilint/.github/workflows/omnilint.yml@v0.5.2
+  rust:
+    uses: lpenz/ghworkflow-rust/.github/workflows/rust.yml@v0.26.4
+    with:
+      coveralls: true
+  build-page:
+    runs-on: ubuntu-latest
+    needs: [omnilint, rust]
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo run > index.md
+        env:
+          GITHUB_USER_REPOS_STATUS: ${{ secrets.USER_REPOS_STATUS }}
+      - run: rm -f .gitignore
+      - name: deploy
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
+        with:
+          branch: gh-pages
+          folder: .
+          single-commit: true
+          clean: true
