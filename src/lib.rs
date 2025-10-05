@@ -33,14 +33,23 @@ pub fn md_write_repo<W: std::io::Write>(
 
 pub fn md_write_repos<'a, W: std::io::Write>(
     o: &mut std::io::BufWriter<W>,
+    title: &str,
     repos: impl Iterator<Item = &'a repo::Repo>,
 ) -> Result<()> {
-    writeln!(o, "| Repository | Stars | Shields |")?;
-    writeln!(o, "| -- | --: | -- |")?;
+    let mut first = true;
     for repo in repos {
+        if first {
+            writeln!(o, "# {title}")?;
+            writeln!(o)?;
+            writeln!(o, "| Repository | Stars | Shields |")?;
+            writeln!(o, "| -- | --: | -- |")?;
+            first = false;
+        }
         md_write_repo(o, repo)?;
     }
-    writeln!(o)?;
+    if !first {
+        writeln!(o)?;
+    }
     Ok(())
 }
 
@@ -48,12 +57,27 @@ pub fn markdown_write<W: std::io::Write>(
     repos: &[repo::Repo],
     mut o: std::io::BufWriter<W>,
 ) -> Result<()> {
-    writeln!(o, "# Active Repositories")?;
     writeln!(o)?;
-    md_write_repos(&mut o, repos.iter().filter(|r| !r.archived))?;
-    writeln!(o, "# Archived Repositories")?;
-    writeln!(o)?;
-    md_write_repos(&mut o, repos.iter().filter(|r| r.archived))?;
+    md_write_repos(
+        &mut o,
+        "Active Repositories",
+        repos.iter().filter(|r| r.permissions.admin && !r.archived),
+    )?;
+    md_write_repos(
+        &mut o,
+        "Archived Repositories",
+        repos.iter().filter(|r| r.permissions.admin && r.archived),
+    )?;
+    md_write_repos(
+        &mut o,
+        "Third-party active repositories",
+        repos.iter().filter(|r| !r.permissions.admin && !r.archived),
+    )?;
+    md_write_repos(
+        &mut o,
+        "Third-party archived repositories",
+        repos.iter().filter(|r| !r.permissions.admin && r.archived),
+    )?;
     Ok(())
 }
 

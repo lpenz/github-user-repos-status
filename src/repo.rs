@@ -22,6 +22,7 @@ pub struct Repo {
     pub private: bool,
     pub archived: bool,
     pub owner: Owner,
+    pub permissions: Permissions,
     pub readme: Option<String>,
     pub stargazers_count: u32,
 }
@@ -29,6 +30,11 @@ pub struct Repo {
 #[derive(Debug, Deserialize)]
 pub struct Owner {
     pub login: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Permissions {
+    pub admin: bool,
 }
 
 pub fn token_get() -> Result<Token> {
@@ -45,7 +51,7 @@ pub async fn list_get(token: &Token) -> Result<Vec<Repo>> {
         .header("User-Agent", "rust-reqwest")
         .send()
         .await?
-        .json()
+        .json::<Vec<Repo>>()
         .await?)
 }
 
