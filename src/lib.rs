@@ -39,7 +39,7 @@ pub fn md_write_repos<'a, W: std::io::Write>(
     let mut first = true;
     for repo in repos {
         if first {
-            writeln!(o, "# {title}")?;
+            writeln!(o, "## {title}")?;
             writeln!(o)?;
             writeln!(o, "| Repository | Stars | Shields |")?;
             writeln!(o, "| -- | --: | -- |")?;
