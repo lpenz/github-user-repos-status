@@ -58,6 +58,11 @@ pub fn markdown_write<W: std::io::Write>(
     mut o: std::io::BufWriter<W>,
 ) -> Result<()> {
     writeln!(o)?;
+    writeln!(
+        o,
+        "Generated via <https://github.com/lpenz/github-user-repos-status>"
+    )?;
+    writeln!(o)?;
     md_write_repos(
         &mut o,
         "Active Repositories",
