@@ -10,7 +10,6 @@ use derive_more::Display;
 use futures::future::join_all;
 use reqwest::Client;
 use serde::Deserialize;
-use url::Url;
 
 #[derive(Debug, Display)]
 pub struct Token(String);
@@ -64,7 +63,7 @@ pub async fn readme_get(token: &Token, repo: &Repo) -> Result<String> {
     );
     #[derive(Debug, Deserialize)]
     pub struct ReadmeInfo {
-        pub download_url: Url,
+        pub download_url: String,
     }
     let readme: ReadmeInfo = client
         .get(&url)
