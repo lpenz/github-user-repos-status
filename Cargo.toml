@@ -1,0 +1,22 @@
+[package]
+name = "github-user-repos-status"
+description = "Create a github page with the status of all of the user's repositories"
+version = "0.1.0"
+authors = ["Leandro Lisboa Penz <lpenz@lpenz.org>"]
+edition = "2024"
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/lpenz/ogle"
+repository = "https://github.com/lpenz/ogle"
+
+[dependencies]
+clap = { version = "4.6.0", features = ["derive"] }
+color-eyre = "0.6.5"
+derive_more = { version = "2.1.1", features = ["display"] }
+futures = "0.3.32"
+pulldown-cmark = "0.13.3"
+reqwest = { version = "0.13.2", features = ["json"] }
+serde = { version = "1.0.228", features = ["derive"] }
+tokio = { version = "1.50.0", features = ["full"] }
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "tracing-log"] }
+url = "2.5.8"
